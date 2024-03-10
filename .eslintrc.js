@@ -23,5 +23,10 @@ module.exports = {
   plugins: ['@typescript-eslint', 'react', '@react-native-community'],
   rules: {
     'react/react-in-jsx-scope': 'off',
+    'react/no-unescaped-entities': 'off',
+  },
+  globals: {
+    it: 'readonly',
+    expect: 'readonly',
   },
 };
