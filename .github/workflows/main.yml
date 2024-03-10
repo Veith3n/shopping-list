@@ -1,0 +1,34 @@
+name: Check Code Quality
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Check Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Cache node modules
+        uses: actions/cache@v4.0.1
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Packages
+        run: npm ci
+
+      - name: Prettier
+        run: npm run format -- --cache
+
+      - name: ESLint
+        run: npm run lint
