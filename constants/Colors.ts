@@ -3,7 +3,7 @@ import { ColorSchemeName } from 'react-native';
 const tintColorLight = '#2f95dc';
 const tintColorDark = '#fff';
 
-const Colors = {
+const Colors: Record<'light' | 'dark', ColorList> = {
   light: {
     text: '#000',
     background: '#fff',
@@ -22,6 +22,14 @@ const Colors = {
 
 export default Colors;
 
-export function getColorSchemeForScheme(colorScheme: ColorSchemeName) {
+export interface ColorList {
+  text: string;
+  background: string;
+  tint: string;
+  tabIconDefault: string;
+  tabIconSelected: string;
+}
+
+export function getColorSchemeForScheme(colorScheme: ColorSchemeName): ColorList {
   return Colors[colorScheme ?? 'light'];
 }
