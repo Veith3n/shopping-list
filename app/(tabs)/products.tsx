@@ -1,14 +1,10 @@
+import { useState } from 'react';
 import { SectionList, StatusBar, StyleSheet } from 'react-native';
 
-import { Text, View } from '@/components/Themed';
+import { Product, ProductData, ProductSection, ProductSectionHeader } from '@/components/Product';
+import { View } from '@/components/Themed';
 
-interface Product {
-  name: string;
-  price: number;
-  shopName: string;
-}
-
-const PRODUCT_LIST: Product[] = [
+const PRODUCT_LIST: ProductData[] = [
   { name: 'Pizza', price: 10, shopName: 'Pizza Hut' },
   { name: 'Burger', price: 5, shopName: 'McDonalds' },
   { name: 'Risotto', price: 15, shopName: 'Olive Garden' },
@@ -22,29 +18,10 @@ const PRODUCT_LIST: Product[] = [
   { name: 'Ice Cream', price: 3, shopName: 'Cold Stone' },
 ];
 
-interface Section<T> {
-  title: string;
-  data: T[];
-}
-
-interface ProductSection extends Section<Product> {}
-
-const renderProduct = ({ item }: { item: Product }) => (
-  <View style={{ ...styles.item }}>
-    <Text>
-      {item.name} - ${item.price}
-    </Text>
-  </View>
-);
-
-const renderSectionHeader = ({ section }: { section: ProductSection }) => (
-  <View style={{ ...styles.header }}>
-    <Text style={{ fontWeight: 'bold' }}>{section.title}</Text>
-  </View>
-);
-
 export default function ProductsScreen() {
-  const groupedData = PRODUCT_LIST.reduce((acc: ProductSection[], item: Product) => {
+  const [productList, _setProductList] = useState<ProductData[]>(PRODUCT_LIST);
+
+  const groupedData = productList.reduce((acc: ProductSection[], item: ProductData) => {
     const sectionExists = acc.find((section) => section.title === item.shopName);
 
     if (sectionExists) {
@@ -61,8 +38,8 @@ export default function ProductsScreen() {
       <SectionList
         sections={groupedData}
         keyExtractor={(item, index) => item.name + index}
-        renderItem={({ item }) => renderProduct({ item })}
-        renderSectionHeader={({ section }) => renderSectionHeader({ section })}
+        renderItem={({ item }) => Product({ item, styles: styles.item })}
+        renderSectionHeader={({ section }) => ProductSectionHeader(section, styles.header)}
       />
     </View>
   );
