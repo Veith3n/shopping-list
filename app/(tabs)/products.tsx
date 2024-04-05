@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Button, SectionList, StatusBar, StyleSheet } from 'react-native';
 
+import { DeleteProductAlert } from '@/components/alerts/ProductDeletionAlert';
 import { AddProductForm } from '@/components/forms/AddProductForm';
-import { Product, ProductData, ProductSection, ProductSectionHeader } from '@/components/Product';
+import { compareProducts, Product, ProductData, ProductSection, ProductSectionHeader } from '@/components/Product';
 import { View } from '@/components/Themed';
 
 const PRODUCT_LIST: ProductData[] = [
@@ -45,14 +46,31 @@ export default function ProductsScreen() {
     setShowAddProductForm(false);
   };
 
+  const handleDeleteProduct = (productToDelete: ProductData) => {
+    const handleDeleteProduct = () => {
+      setProductList((prevList) => {
+        const indexToRemove = prevList.findIndex((product) => compareProducts(product, productToDelete));
+
+        if (indexToRemove === -1) {
+          return prevList;
+        }
+
+        return [...prevList.slice(0, indexToRemove), ...prevList.slice(indexToRemove + 1)];
+      });
+    };
+
+    DeleteProductAlert({ productName: productToDelete.name, onDelete: handleDeleteProduct });
+  };
+
   return (
     <View style={styles.container}>
       {!showAddProductForm && <Button title="Add Product" onPress={addProduct} />}
       {showAddProductForm && <AddProductForm onAddProduct={handleAddProduct} />}
+
       <SectionList
         sections={groupedData}
         keyExtractor={(item, index) => item.name + index}
-        renderItem={({ item }) => Product({ item, styles: styles.item })}
+        renderItem={({ item }) => Product({ item, styles: styles.item, onRemoval: handleDeleteProduct })}
         renderSectionHeader={({ section }) => ProductSectionHeader(section, styles.header)}
       />
     </View>
@@ -66,6 +84,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   item: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     padding: 10,
     marginVertical: 8,
   },
