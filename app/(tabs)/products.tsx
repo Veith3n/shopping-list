@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { SectionList, StatusBar, StyleSheet } from 'react-native';
+import { Button, SectionList, StatusBar, StyleSheet } from 'react-native';
 
+import { AddProductForm } from '@/components/forms/AddProductForm';
 import { Product, ProductData, ProductSection, ProductSectionHeader } from '@/components/Product';
 import { View } from '@/components/Themed';
 
@@ -19,7 +20,8 @@ const PRODUCT_LIST: ProductData[] = [
 ];
 
 export default function ProductsScreen() {
-  const [productList, _setProductList] = useState<ProductData[]>(PRODUCT_LIST);
+  const [productList, setProductList] = useState<ProductData[]>(PRODUCT_LIST);
+  const [showAddProductForm, setShowAddProductForm] = useState(false);
 
   const groupedData = productList.reduce((acc: ProductSection[], item: ProductData) => {
     const sectionExists = acc.find((section) => section.title === item.shopName);
@@ -33,8 +35,20 @@ export default function ProductsScreen() {
     return acc;
   }, []);
 
+  const addProduct = () => {
+    setShowAddProductForm(true);
+  };
+
+  const handleAddProduct = (product: ProductData) => {
+    setProductList([product, ...productList].map((product) => ({ ...product })));
+
+    setShowAddProductForm(false);
+  };
+
   return (
     <View style={styles.container}>
+      {!showAddProductForm && <Button title="Add Product" onPress={addProduct} />}
+      {showAddProductForm && <AddProductForm onAddProduct={handleAddProduct} />}
       <SectionList
         sections={groupedData}
         keyExtractor={(item, index) => item.name + index}
