@@ -14,8 +14,10 @@ const validationSchema = Yup.object().shape({
 });
 
 interface AddProductFormProps {
-  onAddProduct: (product: ProductData) => void;
+  onAddProduct: (product: AddProductFormValues) => void;
 }
+
+export interface AddProductFormValues extends Omit<ProductData, 'id'> {}
 
 export const AddProductForm = ({ onAddProduct }: AddProductFormProps) => {
   const {
@@ -32,7 +34,7 @@ export const AddProductForm = ({ onAddProduct }: AddProductFormProps) => {
     },
   });
 
-  const onSubmit = ({ name, shopName, price }: ProductData) => {
+  const onSubmit = ({ name, shopName, price }: AddProductFormValues) => {
     onAddProduct({ name: name.trim(), shopName: shopName.trim(), price });
     reset();
   };

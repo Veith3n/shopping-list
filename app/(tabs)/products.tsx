@@ -2,26 +2,27 @@ import { useState } from 'react';
 import { Button, SectionList, StatusBar, StyleSheet } from 'react-native';
 
 import { DeleteProductAlert } from '@/components/alerts/ProductDeletionAlert';
-import { AddProductForm } from '@/components/forms/AddProductForm';
+import { AddProductForm, AddProductFormValues } from '@/components/forms/AddProductForm';
 import { compareProducts, Product, ProductData, ProductSection, ProductSectionHeader } from '@/components/Product';
 import { View } from '@/components/Themed';
 
 const PRODUCT_LIST: ProductData[] = [
   {
+    id: 1,
     name: 'SuperLongPizzaName SuperLongPizzaNameSuperLongPizzaNameSuperLongPizzaNameSuperLongPizzaNameSuperLongPizzaName',
     price: 10,
     shopName: 'Pizza Hut',
   },
-  { name: 'Burger', price: 5, shopName: 'McDonalds' },
-  { name: 'Risotto', price: 15, shopName: 'Olive Garden' },
-  { name: 'French Fries', price: 2, shopName: 'McDonalds' },
-  { name: 'Onion Rings', price: 3, shopName: 'Burger King' },
-  { name: 'Fried Shrimps', price: 8, shopName: 'Red Lobster' },
-  { name: 'Water', price: 1, shopName: 'Publix' },
-  { name: 'Coke', price: 2, shopName: 'Publix' },
-  { name: 'Beer', price: 5, shopName: 'Publix' },
-  { name: 'Cheese Cake', price: 4, shopName: 'Cheesecake Factory' },
-  { name: 'Ice Cream', price: 3, shopName: 'Cold Stone' },
+  { id: 2, name: 'Burger', price: 5, shopName: 'McDonalds' },
+  { id: 3, name: 'Risotto', price: 15, shopName: 'Olive Garden' },
+  { id: 4, name: 'French Fries', price: 2, shopName: 'McDonalds' },
+  { id: 5, name: 'Onion Rings', price: 3, shopName: 'Burger King' },
+  { id: 6, name: 'Fried Shrimps', price: 8, shopName: 'Red Lobster' },
+  { id: 7, name: 'Water', price: 1, shopName: 'Publix' },
+  { id: 8, name: 'Coke', price: 2, shopName: 'Publix' },
+  { id: 10, name: 'Beer', price: 5, shopName: 'Publix' },
+  { id: 12, name: 'Cheese Cake', price: 4, shopName: 'Cheesecake Factory' },
+  { id: 22, name: 'Ice Cream', price: 3, shopName: 'Cold Stone' },
 ];
 
 export default function ProductsScreen() {
@@ -44,8 +45,9 @@ export default function ProductsScreen() {
     setShowAddProductForm(true);
   };
 
-  const handleAddProduct = (product: ProductData) => {
-    setProductList([product, ...productList].map((product) => ({ ...product })));
+  const handleAddProduct = (product: AddProductFormValues) => {
+    const nextId = Math.max(...productList.map((product) => product.id)) + 1;
+    setProductList([{ id: nextId, ...product }, ...productList].map((product) => ({ ...product })));
 
     setShowAddProductForm(false);
   };

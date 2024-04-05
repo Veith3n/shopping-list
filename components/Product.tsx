@@ -6,6 +6,7 @@ import { Text } from './Themed';
 export interface ProductSection extends Section<ProductData> {}
 
 export interface ProductData {
+  id: number;
   name: string;
   price: number;
   shopName: string;
