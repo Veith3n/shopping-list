@@ -34,11 +34,12 @@ export const Product = ({
   onRemoval: (product: ProductData) => void;
   onMarkAsPurchased: (product: ProductData) => void;
 }) => (
-  <View style={{ ...styles }}>
-    <Text style={item.purchased && localStyles.strikethrough}>
-      {item.name} - ${item.price}
-    </Text>
-
+  <View style={[localStyles.container, { ...styles }]}>
+    <View style={localStyles.textContainer}>
+      <Text style={item.purchased && localStyles.strikethrough} numberOfLines={5}>
+        {item.name} - ${item.price}
+      </Text>
+    </View>
     <View style={localStyles.buttonsContainer}>
       <Button title="Mark as purchased" onPress={() => onMarkAsPurchased(item)} disabled={item.purchased} />
 
@@ -50,9 +51,17 @@ export const Product = ({
 );
 
 const localStyles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  textContainer: {
+    flex: 1,
+  },
   buttonsContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center',
   },
   strikethrough: {
     textDecorationLine: 'line-through',

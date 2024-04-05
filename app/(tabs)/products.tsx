@@ -99,9 +99,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     padding: 10,
     marginVertical: 8,
   },
