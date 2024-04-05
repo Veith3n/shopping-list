@@ -7,7 +7,11 @@ import { compareProducts, Product, ProductData, ProductSection, ProductSectionHe
 import { View } from '@/components/Themed';
 
 const PRODUCT_LIST: ProductData[] = [
-  { name: 'Pizza', price: 10, shopName: 'Pizza Hut' },
+  {
+    name: 'SuperLongPizzaName SuperLongPizzaNameSuperLongPizzaNameSuperLongPizzaNameSuperLongPizzaNameSuperLongPizzaName',
+    price: 10,
+    shopName: 'Pizza Hut',
+  },
   { name: 'Burger', price: 5, shopName: 'McDonalds' },
   { name: 'Risotto', price: 15, shopName: 'Olive Garden' },
   { name: 'French Fries', price: 2, shopName: 'McDonalds' },
