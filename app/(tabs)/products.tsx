@@ -62,6 +62,21 @@ export default function ProductsScreen() {
     DeleteProductAlert({ productName: productToDelete.name, onDelete: handleDeleteProduct });
   };
 
+  const handleMarkAsPurchased = (productToMark: ProductData) => {
+    setProductList((prevList) => {
+      const indexToMark = prevList.findIndex((product) => compareProducts(product, productToMark));
+
+      if (indexToMark === -1) {
+        return prevList;
+      }
+
+      const updatedProduct = { ...prevList[indexToMark] };
+      updatedProduct.purchased = true;
+
+      return [...prevList.slice(0, indexToMark), updatedProduct, ...prevList.slice(indexToMark + 1)];
+    });
+  };
+
   return (
     <View style={styles.container}>
       {!showAddProductForm && <Button title="Add Product" onPress={addProduct} />}
@@ -70,7 +85,7 @@ export default function ProductsScreen() {
       <SectionList
         sections={groupedData}
         keyExtractor={(item, index) => item.name + index}
-        renderItem={({ item }) => Product({ item, styles: styles.item, onRemoval: handleDeleteProduct })}
+        renderItem={({ item }) => Product({ item, styles: styles.item, onRemoval: handleDeleteProduct, onMarkAsPurchased: handleMarkAsPurchased })}
         renderSectionHeader={({ section }) => ProductSectionHeader(section, styles.header)}
       />
     </View>
