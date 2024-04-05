@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, SectionList, StatusBar, StyleSheet } from 'react-native';
+import { Alert, Button, SectionList, StatusBar, StyleSheet } from 'react-native';
 
 import { AddProductForm } from '@/components/forms/AddProductForm';
 import { compareProducts, Product, ProductData, ProductSection, ProductSectionHeader } from '@/components/Product';
@@ -46,15 +46,29 @@ export default function ProductsScreen() {
   };
 
   const handleDeleteProduct = (productToDelete: ProductData) => {
-    setProductList((prevList) => {
-      const indexToRemove = prevList.findIndex((product) => compareProducts(product, productToDelete));
+    Alert.alert(
+      'Delete Product',
+      `Are you sure you want to delete ${productToDelete.name}?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => {
+            setProductList((prevList) => {
+              const indexToRemove = prevList.findIndex((product) => compareProducts(product, productToDelete));
 
-      if (indexToRemove === -1) {
-        return prevList;
-      }
+              if (indexToRemove === -1) {
+                return prevList;
+              }
 
-      return [...prevList.slice(0, indexToRemove), ...prevList.slice(indexToRemove + 1)];
-    });
+              return [...prevList.slice(0, indexToRemove), ...prevList.slice(indexToRemove + 1)];
+            });
+          },
+        },
+      ],
+      { cancelable: false },
+    );
   };
 
   return (
