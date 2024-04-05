@@ -2,22 +2,27 @@ import { useState } from 'react';
 import { Button, SectionList, StatusBar, StyleSheet } from 'react-native';
 
 import { DeleteProductAlert } from '@/components/alerts/ProductDeletionAlert';
-import { AddProductForm } from '@/components/forms/AddProductForm';
-import { compareProducts, Product, ProductData, ProductSection, ProductSectionHeader } from '@/components/Product';
+import { AddProductForm, AddProductFormValues } from '@/components/forms/AddProductForm';
+import { Product, ProductData, ProductSection, ProductSectionHeader } from '@/components/Product';
 import { View } from '@/components/Themed';
 
 const PRODUCT_LIST: ProductData[] = [
-  { name: 'Pizza', price: 10, shopName: 'Pizza Hut' },
-  { name: 'Burger', price: 5, shopName: 'McDonalds' },
-  { name: 'Risotto', price: 15, shopName: 'Olive Garden' },
-  { name: 'French Fries', price: 2, shopName: 'McDonalds' },
-  { name: 'Onion Rings', price: 3, shopName: 'Burger King' },
-  { name: 'Fried Shrimps', price: 8, shopName: 'Red Lobster' },
-  { name: 'Water', price: 1, shopName: 'Publix' },
-  { name: 'Coke', price: 2, shopName: 'Publix' },
-  { name: 'Beer', price: 5, shopName: 'Publix' },
-  { name: 'Cheese Cake', price: 4, shopName: 'Cheesecake Factory' },
-  { name: 'Ice Cream', price: 3, shopName: 'Cold Stone' },
+  {
+    id: 1,
+    name: 'SuperLongPizzaName SuperLongPizzaNameSuperLongPizzaNameSuperLongPizzaNameSuperLongPizzaNameSuperLongPizzaName',
+    price: 10,
+    shopName: 'Pizza Hut',
+  },
+  { id: 2, name: 'Burger', price: 5, shopName: 'McDonalds' },
+  { id: 3, name: 'Risotto', price: 15, shopName: 'Olive Garden' },
+  { id: 4, name: 'French Fries', price: 2, shopName: 'McDonalds' },
+  { id: 5, name: 'Onion Rings', price: 3, shopName: 'Burger King' },
+  { id: 6, name: 'Fried Shrimps', price: 8, shopName: 'Red Lobster' },
+  { id: 7, name: 'Water', price: 1, shopName: 'Publix' },
+  { id: 8, name: 'Coke', price: 2, shopName: 'Publix' },
+  { id: 10, name: 'Beer', price: 5, shopName: 'Publix' },
+  { id: 12, name: 'Cheese Cake', price: 4, shopName: 'Cheesecake Factory' },
+  { id: 22, name: 'Ice Cream', price: 3, shopName: 'Cold Stone' },
 ];
 
 export default function ProductsScreen() {
@@ -40,8 +45,9 @@ export default function ProductsScreen() {
     setShowAddProductForm(true);
   };
 
-  const handleAddProduct = (product: ProductData) => {
-    setProductList([product, ...productList].map((product) => ({ ...product })));
+  const handleAddProduct = (product: AddProductFormValues) => {
+    const nextId = Math.max(...productList.map((product) => product.id)) + 1;
+    setProductList([{ id: nextId, ...product }, ...productList].map((product) => ({ ...product })));
 
     setShowAddProductForm(false);
   };
@@ -49,7 +55,7 @@ export default function ProductsScreen() {
   const handleDeleteProduct = (productToDelete: ProductData) => {
     const handleDeleteProduct = () => {
       setProductList((prevList) => {
-        const indexToRemove = prevList.findIndex((product) => compareProducts(product, productToDelete));
+        const indexToRemove = prevList.findIndex((product) => product.id === productToDelete.id);
 
         if (indexToRemove === -1) {
           return prevList;
@@ -62,6 +68,21 @@ export default function ProductsScreen() {
     DeleteProductAlert({ productName: productToDelete.name, onDelete: handleDeleteProduct });
   };
 
+  const handleMarkAsPurchased = (productToMark: ProductData) => {
+    setProductList((prevList) => {
+      const indexToMark = prevList.findIndex((product) => product.id === productToMark.id);
+
+      if (indexToMark === -1) {
+        return prevList;
+      }
+
+      const updatedProduct = { ...prevList[indexToMark] };
+      updatedProduct.purchased = true;
+
+      return [...prevList.slice(0, indexToMark), updatedProduct, ...prevList.slice(indexToMark + 1)];
+    });
+  };
+
   return (
     <View style={styles.container}>
       {!showAddProductForm && <Button title="Add Product" onPress={addProduct} />}
@@ -70,7 +91,7 @@ export default function ProductsScreen() {
       <SectionList
         sections={groupedData}
         keyExtractor={(item, index) => item.name + index}
-        renderItem={({ item }) => Product({ item, styles: styles.item, onRemoval: handleDeleteProduct })}
+        renderItem={({ item }) => Product({ item, styles: styles.item, onRemoval: handleDeleteProduct, onMarkAsPurchased: handleMarkAsPurchased })}
         renderSectionHeader={({ section }) => ProductSectionHeader(section, styles.header)}
       />
     </View>
@@ -84,9 +105,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     padding: 10,
     marginVertical: 8,
   },
