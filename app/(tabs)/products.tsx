@@ -3,7 +3,7 @@ import { Button, SectionList, StatusBar, StyleSheet } from 'react-native';
 
 import { DeleteProductAlert } from '@/components/alerts/ProductDeletionAlert';
 import { AddProductForm, AddProductFormValues } from '@/components/forms/AddProductForm';
-import { compareProducts, Product, ProductData, ProductSection, ProductSectionHeader } from '@/components/Product';
+import { Product, ProductData, ProductSection, ProductSectionHeader } from '@/components/Product';
 import { View } from '@/components/Themed';
 
 const PRODUCT_LIST: ProductData[] = [
@@ -55,7 +55,7 @@ export default function ProductsScreen() {
   const handleDeleteProduct = (productToDelete: ProductData) => {
     const handleDeleteProduct = () => {
       setProductList((prevList) => {
-        const indexToRemove = prevList.findIndex((product) => compareProducts(product, productToDelete));
+        const indexToRemove = prevList.findIndex((product) => product.id === productToDelete.id);
 
         if (indexToRemove === -1) {
           return prevList;
@@ -70,7 +70,7 @@ export default function ProductsScreen() {
 
   const handleMarkAsPurchased = (productToMark: ProductData) => {
     setProductList((prevList) => {
-      const indexToMark = prevList.findIndex((product) => compareProducts(product, productToMark));
+      const indexToMark = prevList.findIndex((product) => product.id === productToMark.id);
 
       if (indexToMark === -1) {
         return prevList;
