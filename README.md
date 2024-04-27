@@ -20,3 +20,4 @@ This is a simple shopping list React Native app utilizing Expo in TypeScript.
 - Mark products as bought
 - Filter products by shop name and price
 - Dark mode support
+- Logging screen with email validation
