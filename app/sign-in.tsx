@@ -1,29 +1,48 @@
+import { yupResolver } from '@hookform/resolvers/yup';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { Button, StyleSheet } from 'react-native';
+import * as Yup from 'yup';
 
-import { TextInput, View } from '@/components/Themed';
+import { Text, TextInput, View } from '@/components/Themed';
 
 import { useSession } from './ctx';
 
-export default function SignIn() {
-  const [email, setEmail] = useState('');
+const validationSchema = Yup.object().shape({
+  email: Yup.string().email('Invalid email address').required('Email is required'),
+});
 
+export default function SignIn() {
   const { signIn } = useSession();
 
-  const handleSignIn = () => {
-    if (!email) return;
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: {
+      email: '',
+    },
+  });
 
-    signIn(email);
-
+  const onSubmit = ({ email }: { email: string }) => {
+    signIn(email.trim());
     router.replace('/');
   };
 
   return (
     <View style={styles.container}>
-      <TextInput placeholder="Email" value={email} onChangeText={setEmail} style={styles.input} />
+      <Controller
+        control={control}
+        name="email"
+        render={({ field: { onChange, value } }) => (
+          <TextInput placeholder="Email" value={value} onChangeText={onChange} style={[styles.input, errors.email && styles.inputError]} />
+        )}
+      />
+      {errors.email && <Text style={styles.error}>{errors.email.message}</Text>}
 
-      <Button title="Sign In" onPress={handleSignIn} />
+      <Button title="Sign In" onPress={handleSubmit(onSubmit)} />
     </View>
   );
 }
@@ -43,5 +62,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
+  },
+  inputError: {
+    borderColor: 'red',
+  },
+  error: {
+    color: 'red',
+    marginBottom: 16,
   },
 });
