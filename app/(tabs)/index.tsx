@@ -1,15 +1,13 @@
 import { useState } from 'react';
-import { Button, SectionList, StatusBar, StyleSheet } from 'react-native';
+import { SectionList, StatusBar, StyleSheet } from 'react-native';
 
 import { DeleteProductAlert } from '@/components/alerts/ProductDeletionAlert';
-import { AddProductForm, AddProductFormValues } from '@/components/forms/AddProductForm';
 import { Product, ProductData, ProductSection, ProductSectionHeader } from '@/components/Product';
 import { TextInput, View } from '@/components/Themed';
 import useProductList from '@/hooks/useProductList';
 
 export default function ProductsScreen() {
-  const { productList, deleteProduct, updateProduct, addProduct } = useProductList();
-  const [showAddProductForm, setShowAddProductForm] = useState(false);
+  const { productList, deleteProduct, updateProduct } = useProductList();
   const [priceFilter, setPriceFilter] = useState<number | null>(null);
   const [shopFilter, setShopFilter] = useState<string | null>(null);
 
@@ -27,16 +25,6 @@ export default function ProductsScreen() {
 
       return acc;
     }, []);
-
-  const makeAddProductFormVisible = () => {
-    setShowAddProductForm(true);
-  };
-
-  const handleAddProduct = (product: AddProductFormValues) => {
-    addProduct(product);
-
-    setShowAddProductForm(false);
-  };
 
   const handleDeleteProduct = (productToDelete: ProductData) => {
     const handleDeleteProduct = () => {
@@ -64,8 +52,6 @@ export default function ProductsScreen() {
 
   return (
     <View style={styles.container}>
-      {!showAddProductForm && <Button title="Add Product" onPress={makeAddProductFormVisible} />}
-      {showAddProductForm && <AddProductForm onAddProduct={handleAddProduct} />}
       <View style={styles.filterContainer}>
         <View style={styles.filterItem}>
           <TextInput
