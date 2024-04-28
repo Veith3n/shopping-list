@@ -1,5 +1,5 @@
 import { AntDesign } from '@expo/vector-icons';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { Entypo } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
 
@@ -12,10 +12,6 @@ import Colors from '@/constants/Colors';
 import { useSession } from '../ctx';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: { name: React.ComponentProps<typeof FontAwesome>['name']; color: string }) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
-
 export default function TabLayout() {
   const { session } = useSession();
 
@@ -43,7 +39,7 @@ export default function TabLayout() {
           name="index"
           options={{
             title: 'Products shopping list',
-            tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+            tabBarIcon: ({ color }) => <Entypo name="home" size={24} color={color} />,
           }}
         />
       </Tabs>
