@@ -1,11 +1,12 @@
+import { useContext } from 'react';
 import { StatusBar, StyleSheet } from 'react-native';
 
 import { AddProductForm, AddProductFormValues } from '@/components/forms/AddProductForm';
 import { View } from '@/components/Themed';
-import useProductList from '@/hooks/useProductList';
+import { ProductContext } from '@/contexts/ProductContext';
 
 export default function ProductsScreen() {
-  const { addProduct } = useProductList();
+  const { addProduct } = useContext(ProductContext);
 
   const handleAddProduct = (product: AddProductFormValues) => {
     addProduct(product);

@@ -8,6 +8,7 @@ import { Text } from '@/components/Themed';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
+import { ProductProvider } from '@/contexts/ProductContext';
 
 import { useSession } from '../ctx';
 
@@ -19,30 +20,32 @@ export default function TabLayout() {
 
   return (
     <AuthWrapper>
-      <Text>Session for: {session}</Text>
-      <Tabs
-        screenOptions={{
-          tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-          // Disable the static render of the header on web
-          // to prevent a hydration error in React Navigation v6.
-          headerShown: useClientOnlyValue(false, true),
-        }}
-      >
-        <Tabs.Screen
-          name="add-product"
-          options={{
-            title: 'Add product',
-            tabBarIcon: ({ color }) => <AntDesign name="plus" size={24} color={color} />,
+      <ProductProvider>
+        <Text>Session for: {session}</Text>
+        <Tabs
+          screenOptions={{
+            tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+            // Disable the static render of the header on web
+            // to prevent a hydration error in React Navigation v6.
+            headerShown: useClientOnlyValue(false, true),
           }}
-        />
-        <Tabs.Screen
-          name="index"
-          options={{
-            title: 'Products shopping list',
-            tabBarIcon: ({ color }) => <Entypo name="home" size={24} color={color} />,
-          }}
-        />
-      </Tabs>
+        >
+          <Tabs.Screen
+            name="add-product"
+            options={{
+              title: 'Add product',
+              tabBarIcon: ({ color }) => <AntDesign name="plus" size={24} color={color} />,
+            }}
+          />
+          <Tabs.Screen
+            name="index"
+            options={{
+              title: 'Products shopping list',
+              tabBarIcon: ({ color }) => <Entypo name="home" size={24} color={color} />,
+            }}
+          />
+        </Tabs>
+      </ProductProvider>
     </AuthWrapper>
   );
 }

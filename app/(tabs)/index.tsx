@@ -1,13 +1,13 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { SectionList, StatusBar, StyleSheet } from 'react-native';
 
 import { DeleteProductAlert } from '@/components/alerts/ProductDeletionAlert';
 import { Product, ProductData, ProductSection, ProductSectionHeader } from '@/components/Product';
 import { TextInput, View } from '@/components/Themed';
-import useProductList from '@/hooks/useProductList';
+import { ProductContext } from '@/contexts/ProductContext';
 
 export default function ProductsScreen() {
-  const { productList, deleteProduct, updateProduct } = useProductList();
+  const { productList, deleteProduct, updateProduct } = useContext(ProductContext);
   const [priceFilter, setPriceFilter] = useState<number | null>(null);
   const [shopFilter, setShopFilter] = useState<string | null>(null);
 
