@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import { StatusBar, StyleSheet } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 import { AddProductForm, AddProductFormValues } from '@/components/forms/AddProductForm';
 import { View } from '@/components/Themed';
@@ -10,6 +11,17 @@ export default function ProductsScreen() {
 
   const handleAddProduct = (product: AddProductFormValues) => {
     addProduct(product);
+    showAddProductToast();
+  };
+
+  const showAddProductToast = () => {
+    Toast.show({
+      type: 'success',
+      text1: 'Product Added',
+      text2: 'The product has been added successfully.',
+      visibilityTime: 2000,
+      autoHide: true,
+    });
   };
 
   return (

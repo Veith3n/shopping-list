@@ -2,6 +2,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
+import Toast from 'react-native-toast-message';
 
 import AuthWrapper from '@/components/AuthWrapper';
 import { Text } from '@/components/Themed';
@@ -45,6 +46,7 @@ export default function TabLayout() {
             }}
           />
         </Tabs>
+        <Toast />
       </ProductProvider>
     </AuthWrapper>
   );
