@@ -5,28 +5,10 @@ import { DeleteProductAlert } from '@/components/alerts/ProductDeletionAlert';
 import { AddProductForm, AddProductFormValues } from '@/components/forms/AddProductForm';
 import { Product, ProductData, ProductSection, ProductSectionHeader } from '@/components/Product';
 import { TextInput, View } from '@/components/Themed';
-
-const PRODUCT_LIST: ProductData[] = [
-  {
-    id: 1,
-    name: 'SuperLongPizzaName SuperLongPizzaNameSuperLongPizzaNameSuperLongPizzaNameSuperLongPizzaNameSuperLongPizzaName',
-    price: 10,
-    shopName: 'Pizza Hut',
-  },
-  { id: 2, name: 'Burger', price: 5, shopName: 'McDonalds' },
-  { id: 3, name: 'Risotto', price: 15, shopName: 'Olive Garden' },
-  { id: 4, name: 'French Fries', price: 2, shopName: 'McDonalds' },
-  { id: 5, name: 'Onion Rings', price: 3, shopName: 'Burger King' },
-  { id: 6, name: 'Fried Shrimps', price: 8, shopName: 'Red Lobster' },
-  { id: 7, name: 'Water', price: 1, shopName: 'Publix' },
-  { id: 8, name: 'Coke', price: 2, shopName: 'Publix' },
-  { id: 10, name: 'Beer', price: 5, shopName: 'Publix' },
-  { id: 12, name: 'Cheese Cake', price: 4, shopName: 'Cheesecake Factory' },
-  { id: 22, name: 'Ice Cream', price: 3, shopName: 'Cold Stone' },
-];
+import useProductList from '@/hooks/useProductList';
 
 export default function ProductsScreen() {
-  const [productList, setProductList] = useState<ProductData[]>(PRODUCT_LIST);
+  const { productList, deleteProduct, updateProduct, addProduct } = useProductList();
   const [showAddProductForm, setShowAddProductForm] = useState(false);
   const [priceFilter, setPriceFilter] = useState<number | null>(null);
   const [shopFilter, setShopFilter] = useState<string | null>(null);
@@ -46,46 +28,26 @@ export default function ProductsScreen() {
       return acc;
     }, []);
 
-  const addProduct = () => {
+  const makeAddProductFormVisible = () => {
     setShowAddProductForm(true);
   };
 
   const handleAddProduct = (product: AddProductFormValues) => {
-    const nextId = Math.max(...productList.map((product) => product.id)) + 1;
-    setProductList([{ id: nextId, ...product }, ...productList].map((product) => ({ ...product })));
+    addProduct(product);
 
     setShowAddProductForm(false);
   };
 
   const handleDeleteProduct = (productToDelete: ProductData) => {
     const handleDeleteProduct = () => {
-      setProductList((prevList) => {
-        const indexToRemove = prevList.findIndex((product) => product.id === productToDelete.id);
-
-        if (indexToRemove === -1) {
-          return prevList;
-        }
-
-        return [...prevList.slice(0, indexToRemove), ...prevList.slice(indexToRemove + 1)];
-      });
+      deleteProduct(productToDelete.id);
     };
 
     DeleteProductAlert({ productName: productToDelete.name, onDelete: handleDeleteProduct });
   };
 
   const handleMarkAsPurchased = (productToMark: ProductData) => {
-    setProductList((prevList) => {
-      const indexToMark = prevList.findIndex((product) => product.id === productToMark.id);
-
-      if (indexToMark === -1) {
-        return prevList;
-      }
-
-      const updatedProduct = { ...prevList[indexToMark] };
-      updatedProduct.purchased = true;
-
-      return [...prevList.slice(0, indexToMark), updatedProduct, ...prevList.slice(indexToMark + 1)];
-    });
+    updateProduct({ ...productToMark, purchased: true });
   };
 
   const handlePriceFilterChange = (price: string) => {
@@ -102,7 +64,7 @@ export default function ProductsScreen() {
 
   return (
     <View style={styles.container}>
-      {!showAddProductForm && <Button title="Add Product" onPress={addProduct} />}
+      {!showAddProductForm && <Button title="Add Product" onPress={makeAddProductFormVisible} />}
       {showAddProductForm && <AddProductForm onAddProduct={handleAddProduct} />}
       <View style={styles.filterContainer}>
         <View style={styles.filterItem}>
