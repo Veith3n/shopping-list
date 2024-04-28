@@ -1,3 +1,4 @@
+import { AntDesign } from '@expo/vector-icons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from 'expo-router';
 import React from 'react';
@@ -29,9 +30,15 @@ export default function TabLayout() {
           // Disable the static render of the header on web
           // to prevent a hydration error in React Navigation v6.
           headerShown: useClientOnlyValue(false, true),
-          tabBarStyle: { display: 'none' },
         }}
       >
+        <Tabs.Screen
+          name="add-product"
+          options={{
+            title: 'Add product',
+            tabBarIcon: ({ color }) => <AntDesign name="plus" size={24} color={color} />,
+          }}
+        />
         <Tabs.Screen
           name="index"
           options={{
