@@ -25,7 +25,6 @@ const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
   const logoutTitle = `Logout ${session}`;
   return (
     <>
-      <Text>Session for: {session}</Text>
       {children}
       <Button title={logoutTitle} onPress={signOut} color="red" />
     </>
