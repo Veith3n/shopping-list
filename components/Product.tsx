@@ -13,6 +13,7 @@ export interface ProductData {
   price: number;
   shopName: string;
   purchased?: boolean;
+  details?: string;
 }
 
 export function compareProducts(productOne: ProductData, productTwo: ProductData): boolean {
@@ -20,7 +21,8 @@ export function compareProducts(productOne: ProductData, productTwo: ProductData
     productOne.name === productTwo.name &&
     productOne.price === productTwo.price &&
     productOne.shopName === productTwo.shopName &&
-    productOne.purchased === productTwo.purchased
+    productOne.purchased === productTwo.purchased &&
+    productOne.details === productTwo.details
   );
 }
 

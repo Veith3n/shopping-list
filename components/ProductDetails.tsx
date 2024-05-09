@@ -17,6 +17,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onClose }) => 
       <Text style={styles.detail}>Price: ${product.price}</Text>
       <Text style={styles.detail}>Shop: {product.shopName}</Text>
       <Text style={styles.detail}>Purchased: {product.purchased ? 'Yes' : 'No'}</Text>
+      <Text style={styles.detail}>Details: {product.details ? product.details : '-'}</Text>
 
       <Button title="Close" onPress={onClose} />
     </View>
