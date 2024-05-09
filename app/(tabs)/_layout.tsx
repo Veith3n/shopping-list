@@ -1,45 +1,46 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { AntDesign, Entypo } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
+import Toast from 'react-native-toast-message';
 
 import AuthWrapper from '@/components/AuthWrapper';
-import { Text } from '@/components/Themed';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
-
-import { useSession } from '../ctx';
+import { ProductProvider } from '@/contexts/ProductContext';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: { name: React.ComponentProps<typeof FontAwesome>['name']; color: string }) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
-
 export default function TabLayout() {
-  const { session } = useSession();
-
   const colorScheme = useColorScheme();
 
   return (
     <AuthWrapper>
-      <Text>Session for: {session}</Text>
-      <Tabs
-        screenOptions={{
-          tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-          // Disable the static render of the header on web
-          // to prevent a hydration error in React Navigation v6.
-          headerShown: useClientOnlyValue(false, true),
-          tabBarStyle: { display: 'none' },
-        }}
-      >
-        <Tabs.Screen
-          name="index"
-          options={{
-            title: 'Products shopping list',
-            tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+      <ProductProvider>
+        <Tabs
+          screenOptions={{
+            tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+            // Disable the static render of the header on web
+            // to prevent a hydration error in React Navigation v6.
+            headerShown: useClientOnlyValue(false, true),
           }}
-        />
-      </Tabs>
+        >
+          <Tabs.Screen
+            name="add-product"
+            options={{
+              title: 'Add product',
+              tabBarIcon: ({ color }) => <AntDesign name="plus" size={24} color={color} />,
+            }}
+          />
+          <Tabs.Screen
+            name="index"
+            options={{
+              title: 'Products shopping list',
+              tabBarIcon: ({ color }) => <Entypo name="home" size={24} color={color} />,
+            }}
+          />
+        </Tabs>
+        <Toast />
+      </ProductProvider>
     </AuthWrapper>
   );
 }
