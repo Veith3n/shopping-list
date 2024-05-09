@@ -11,6 +11,7 @@ const validationSchema = Yup.object().shape({
   name: Yup.string().required('Product name is required'),
   price: Yup.number().typeError('Price must be a number').positive('Price must be a positive number').required('Product price is required'),
   shopName: Yup.string().required('Shop name is required'),
+  details: Yup.string().optional(),
 });
 
 interface AddProductFormProps {
@@ -31,11 +32,12 @@ export const AddProductForm = ({ onAddProduct }: AddProductFormProps) => {
       name: '',
       shopName: '',
       price: 0,
+      details: '',
     },
   });
 
-  const onSubmit = ({ name, shopName, price }: AddProductFormValues) => {
-    onAddProduct({ name: name.trim(), shopName: shopName.trim(), price });
+  const onSubmit = ({ name, shopName, price, details }: AddProductFormValues) => {
+    onAddProduct({ name: name.trim(), shopName: shopName.trim(), price, details: details?.trim() });
     reset();
   };
 
@@ -94,6 +96,21 @@ export const AddProductForm = ({ onAddProduct }: AddProductFormProps) => {
         )}
       />
       {errors.shopName && <Text style={styles.error}>{errors.shopName.message}</Text>}
+
+      <Text style={styles.label}>Details:</Text>
+      <Controller
+        control={control}
+        name="details"
+        render={({ field: { onChange, value } }) => (
+          <TextInput
+            style={[styles.input, errors.details && styles.inputError]}
+            value={value}
+            onChangeText={onChange}
+            placeholder="Optional product details"
+          />
+        )}
+      />
+      {errors.details && <Text style={styles.error}>{errors.details.message}</Text>}
 
       <Button title="Add Product" onPress={handleSubmit(onSubmit)} />
     </View>
