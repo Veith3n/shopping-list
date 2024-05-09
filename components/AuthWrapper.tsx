@@ -22,10 +22,12 @@ const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
     return <Redirect href="/sign-in" />;
   }
 
+  const logoutTitle = `Logout ${session}`;
   return (
     <>
+      <Text>Session for: {session}</Text>
       {children}
-      <Button title="Logout" onPress={signOut} color="red" />
+      <Button title={logoutTitle} onPress={signOut} color="red" />
     </>
   );
 };

@@ -1,28 +1,21 @@
-import { AntDesign } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
+import { AntDesign, Entypo } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
 import Toast from 'react-native-toast-message';
 
 import AuthWrapper from '@/components/AuthWrapper';
-import { Text } from '@/components/Themed';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 import { ProductProvider } from '@/contexts/ProductContext';
 
-import { useSession } from '../ctx';
-
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 export default function TabLayout() {
-  const { session } = useSession();
-
   const colorScheme = useColorScheme();
 
   return (
     <AuthWrapper>
       <ProductProvider>
-        <Text>Session for: {session}</Text>
         <Tabs
           screenOptions={{
             tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
