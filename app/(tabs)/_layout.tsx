@@ -1,4 +1,4 @@
-import { AntDesign, Entypo, MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, Entypo, Feather, MaterialIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
 import Toast from 'react-native-toast-message';
@@ -43,6 +43,13 @@ export default function TabLayout() {
             options={{
               title: 'Geolocation',
               tabBarIcon: ({ color }) => <MaterialIcons name="my-location" size={24} color={color} />,
+            }}
+          />
+          <Tabs.Screen
+            name="weather-info"
+            options={{
+              title: 'Weather Info',
+              tabBarIcon: ({ color }) => <Feather name="cloud" size={24} color={color} />,
             }}
           />
         </Tabs>
