@@ -1,8 +1,10 @@
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 
 import OpenMeteoApiService, { ValueUnit, WeatherApiCurrentWeatherResponseWithWeatherInfo } from '@/common/api/open-meteo-api.service';
-import { Text, View } from '@/components/Themed';
+import wmoIcons from '@/common/wmo-icons';
+import { Text, useThemeColor, View } from '@/components/Themed';
 import useGeolocation from '@/hooks/useGeolocation';
 
 export default function WeatherInfo() {
@@ -46,6 +48,7 @@ export default function WeatherInfo() {
       ) : weather ? (
         <View style={styles.weatherContainer}>
           <Text style={styles.title}>Current location weather</Text>
+          <WeatherIconWithText weathercode={weather.current_weather.weathercode} />
           <WeatherUnitInfo valueUnit={weather.currentWeatherInfo.temperature} prefix="Temperature:" />
           <WeatherUnitInfo valueUnit={weather.currentWeatherInfo.wind} prefix="Windspeed:" />
           <WeatherUnitInfo valueUnit={weather.currentWeatherInfo.windDirection} prefix="Wind Direction:" />
@@ -62,6 +65,23 @@ const WeatherUnitInfo = ({ prefix, valueUnit: { value, unit } }: { prefix: strin
     {prefix} {value} {unit}
   </Text>
 );
+
+const WeatherIconWithText = ({ weathercode }: { weathercode: number }) => {
+  const iconName = wmoIcons[weathercode];
+
+  if (!iconName) {
+    return <></>;
+  }
+
+  const color = useThemeColor('text');
+
+  return (
+    <View style={styles.iconContainer}>
+      <Text style={styles.weatherText}>Weather: </Text>
+      <MaterialCommunityIcons name={iconName} size={48} color={color} />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -86,6 +106,11 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 18,
     color: 'red',
+    marginVertical: 5,
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginVertical: 5,
   },
 });

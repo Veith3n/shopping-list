@@ -9,7 +9,7 @@ export interface ValueUnit {
 
 export interface WeatherApiCurrentWeatherResponseWithWeatherInfo extends WeatherApiCurrentWeatherResponse {
   success: true;
-  currentWeatherInfo: { temperature: ValueUnit; wind: ValueUnit; windDirection: ValueUnit };
+  currentWeatherInfo: { temperature: ValueUnit; wind: ValueUnit; windDirection: ValueUnit; weatherInfo: ValueUnit };
 }
 
 interface FailedResponseWithInfo extends FailedResponse {
@@ -65,6 +65,10 @@ class OpenMeteoApiService implements OpenMeteoApiService {
       windDirection: {
         value: current_weather.winddirection,
         unit: current_weather_units.winddirection,
+      },
+      weatherInfo: {
+        value: current_weather.weathercode,
+        unit: current_weather_units.weathercode,
       },
     };
 
