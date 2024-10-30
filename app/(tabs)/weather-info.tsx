@@ -20,7 +20,7 @@ export default function WeatherInfo() {
   const [loading, setLoading] = useState<boolean>(true);
   const [weatherError, setWeatherError] = useState<string | null>(null);
 
-  const predefinedLocations = [
+  const predefinedLocations: { label: string; value: CitiesWithCurrentLocation }[] = [
     { label: 'Current Location', value: CURRENT_LOCATION },
     { label: 'Tokyo', value: Cities.TOKYO },
     { label: 'Warsaw', value: Cities.WARSAW },
@@ -28,7 +28,6 @@ export default function WeatherInfo() {
   ];
 
   const openMeteoApiService = OpenMeteoApiService.getInstance();
-  const color = useThemeColor('text');
 
   const resolveCityCords = (city: CitiesWithCurrentLocation) => {
     return city === 'CURRENT_LOCATION' ? currentCoords : cityCoordinates[city];
@@ -61,30 +60,48 @@ export default function WeatherInfo() {
 
   return (
     <View style={styles.container}>
-      <RNPickerSelect
-        onValueChange={(value) => setSelectedLocation(value)}
-        items={predefinedLocations}
-        style={{ inputAndroid: { ...pickerSelectStyles.inputAndroid, color }, inputIOS: { ...pickerSelectStyles.inputIOS, color } }}
-        placeholder={{ label: 'Select a location', value: null }}
-      />
+      <CitySelectionPicker locations={predefinedLocations} setSelectedLocation={setSelectedLocation} />
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : weatherError ? (
         <Text style={styles.errorText}>{weatherError}</Text>
       ) : weather ? (
-        <View style={styles.weatherContainer}>
-          <Text style={styles.title}>Weather Information</Text>
-          <WeatherIconWithText weatherCode={weather.currentWeatherInfo.weatherInfo.value} />
-          <WeatherUnitInfo valueUnit={weather.currentWeatherInfo.temperature} prefix="Temperature:" />
-          <WeatherUnitInfo valueUnit={weather.currentWeatherInfo.wind} prefix="Windspeed:" />
-          <WeatherUnitInfo valueUnit={weather.currentWeatherInfo.windDirection} prefix="Wind Direction:" />
-        </View>
+        <WeatherInformation weather={weather} />
       ) : (
         <Text style={styles.errorText}>{geolocationError}</Text>
       )}
     </View>
   );
 }
+
+const CitySelectionPicker = ({
+  locations,
+  setSelectedLocation,
+}: {
+  locations: { label: string; value: CitiesWithCurrentLocation }[];
+  setSelectedLocation: (value: CitiesWithCurrentLocation) => void;
+}) => {
+  const color = useThemeColor('text');
+
+  return (
+    <RNPickerSelect
+      onValueChange={(value) => setSelectedLocation(value)}
+      items={locations}
+      style={{ inputAndroid: { ...pickerSelectStyles.inputAndroid, color }, inputIOS: { ...pickerSelectStyles.inputIOS, color } }}
+      placeholder={{ label: 'Select a location', value: null }}
+    />
+  );
+};
+
+const WeatherInformation = ({ weather }: { weather: WeatherApiCurrentWeatherResponseWithWeatherInfo }) => (
+  <View style={styles.weatherContainer}>
+    <Text style={styles.title}>Weather Information</Text>
+    <WeatherIconWithText weatherCode={weather.currentWeatherInfo.weatherInfo.value} />
+    <WeatherUnitInfo valueUnit={weather.currentWeatherInfo.temperature} prefix="Temperature:" />
+    <WeatherUnitInfo valueUnit={weather.currentWeatherInfo.wind} prefix="Windspeed:" />
+    <WeatherUnitInfo valueUnit={weather.currentWeatherInfo.windDirection} prefix="Wind Direction:" />
+  </View>
+);
 
 const WeatherUnitInfo = ({ prefix, valueUnit: { value, unit } }: { prefix: string; valueUnit: ValueUnit }) => (
   <Text style={styles.weatherText}>
