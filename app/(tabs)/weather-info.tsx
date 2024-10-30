@@ -62,18 +62,26 @@ export default function WeatherInfo() {
     getWeather();
   }, [selectedLocation, currentCoords]);
 
+  function renderContent() {
+    if (loading) {
+      return <ActivityIndicator size="large" color="#0000ff" />;
+    }
+
+    if (weatherError) {
+      return <Text style={styles.errorText}>{weatherError}</Text>;
+    }
+
+    if (weather) {
+      return <WeatherInformation weather={weather} />;
+    }
+
+    return <Text style={styles.errorText}>{geolocationError}</Text>;
+  }
+
   return (
     <View style={styles.container}>
       <CitySelectionPicker locations={predefinedLocations} setSelectedLocation={setSelectedLocation} />
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : weatherError ? (
-        <Text style={styles.errorText}>{weatherError}</Text>
-      ) : weather ? (
-        <WeatherInformation weather={weather} />
-      ) : (
-        <Text style={styles.errorText}>{geolocationError}</Text>
-      )}
+      {renderContent()}
     </View>
   );
 }
