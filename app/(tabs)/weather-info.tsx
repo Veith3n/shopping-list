@@ -1,27 +1,47 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
+import RNPickerSelect from 'react-native-picker-select';
 
 import OpenMeteoApiService, { ValueUnit, WeatherApiCurrentWeatherResponseWithWeatherInfo } from '@/common/api/open-meteo-api.service';
 import wmoIcons from '@/common/wmo-icons';
 import { Text, useThemeColor, View } from '@/components/Themed';
+import { Cities, cityCoordinates } from '@/constants/Cities';
 import useGeolocation from '@/hooks/useGeolocation';
 
-export default function WeatherInfo() {
-  const { coords, errorMsg } = useGeolocation();
+const CURRENT_LOCATION = 'CURRENT_LOCATION';
+type CitiesWithCurrentLocation = Cities | typeof CURRENT_LOCATION;
 
+export default function WeatherInfo() {
+  const { coords: currentCoords, errorMsg: geolocationError } = useGeolocation();
+
+  const [selectedLocation, setSelectedLocation] = useState<CitiesWithCurrentLocation>(CURRENT_LOCATION);
   const [weather, setWeather] = useState<WeatherApiCurrentWeatherResponseWithWeatherInfo | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [weatherError, setWeatherError] = useState<string | null>(null);
 
+  const predefinedLocations = [
+    { label: 'Current Location', value: CURRENT_LOCATION },
+    { label: 'Tokyo', value: Cities.TOKYO },
+    { label: 'Warsaw', value: Cities.WARSAW },
+    { label: 'New York', value: Cities.NEW_YORK },
+  ];
+
   const openMeteoApiService = OpenMeteoApiService.getInstance();
+  const color = useThemeColor('text');
+
+  const resolveCityCords = (city: CitiesWithCurrentLocation) => {
+    return city === 'CURRENT_LOCATION' ? currentCoords : cityCoordinates[city];
+  };
 
   useEffect(() => {
     const getWeather = async () => {
+      const coords = resolveCityCords(selectedLocation);
+
       if (coords) {
+        setLoading(true);
         try {
           const weatherData = await openMeteoApiService.getCurrentWeatherData(coords.latitude, coords.longitude);
-          console.log(weatherData);
 
           if (weatherData.success) {
             setWeather(weatherData);
@@ -37,24 +57,30 @@ export default function WeatherInfo() {
     };
 
     getWeather();
-  }, [coords]);
+  }, [selectedLocation, currentCoords]);
 
   return (
     <View style={styles.container}>
+      <RNPickerSelect
+        onValueChange={(value) => setSelectedLocation(value)}
+        items={predefinedLocations}
+        style={{ inputAndroid: { ...pickerSelectStyles.inputAndroid, color }, inputIOS: { ...pickerSelectStyles.inputIOS, color } }}
+        placeholder={{ label: 'Select a location', value: null }}
+      />
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : weatherError ? (
         <Text style={styles.errorText}>{weatherError}</Text>
       ) : weather ? (
         <View style={styles.weatherContainer}>
-          <Text style={styles.title}>Current location weather</Text>
-          <WeatherIconWithText weathercode={weather.current_weather.weathercode} />
+          <Text style={styles.title}>Weather Information</Text>
+          <WeatherIconWithText weatherCode={weather.currentWeatherInfo.weatherInfo.value} />
           <WeatherUnitInfo valueUnit={weather.currentWeatherInfo.temperature} prefix="Temperature:" />
           <WeatherUnitInfo valueUnit={weather.currentWeatherInfo.wind} prefix="Windspeed:" />
           <WeatherUnitInfo valueUnit={weather.currentWeatherInfo.windDirection} prefix="Wind Direction:" />
         </View>
       ) : (
-        <Text style={styles.errorText}>{errorMsg}</Text>
+        <Text style={styles.errorText}>{geolocationError}</Text>
       )}
     </View>
   );
@@ -66,11 +92,11 @@ const WeatherUnitInfo = ({ prefix, valueUnit: { value, unit } }: { prefix: strin
   </Text>
 );
 
-const WeatherIconWithText = ({ weathercode }: { weathercode: number }) => {
-  const iconName = wmoIcons[weathercode];
+const WeatherIconWithText = ({ weatherCode }: { weatherCode: number }) => {
+  const iconName = wmoIcons[weatherCode];
 
   if (!iconName) {
-    return <></>;
+    return null;
   }
 
   const color = useThemeColor('text');
@@ -112,5 +138,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 5,
+  },
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: 'purple',
+    borderRadius: 8,
+    paddingRight: 30, // to ensure the text is never behind the icon
   },
 });
