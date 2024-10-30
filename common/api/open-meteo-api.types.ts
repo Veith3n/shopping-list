@@ -1,3 +1,5 @@
+type wmoCode = string;
+
 export interface OpenMeteoApiService {
   getCurrentWeatherData(): Promise<GetCurrentWeatherDataResponse>;
 }
@@ -31,7 +33,7 @@ export interface CurrentWeatherUnits {
   windspeed: string;
   winddirection: string;
   is_day: string;
-  weathercode: string;
+  weathercode: wmoCode;
 }
 
 export interface CurrentWeather {
