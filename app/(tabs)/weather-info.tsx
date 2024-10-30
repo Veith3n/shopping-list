@@ -15,9 +15,9 @@ type CitiesWithCurrentLocation = Cities | typeof CURRENT_LOCATION;
 export default function WeatherInfo() {
   const { coords: currentCoords, errorMsg: geolocationError } = useGeolocation();
 
-  const [selectedLocation, setSelectedLocation] = useState<CitiesWithCurrentLocation>(CURRENT_LOCATION);
+  const [selectedLocation, setSelectedLocation] = useState<CitiesWithCurrentLocation | undefined>(undefined);
   const [weather, setWeather] = useState<WeatherApiCurrentWeatherResponseWithWeatherInfo | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [weatherError, setWeatherError] = useState<string | null>(null);
 
   const predefinedLocations: { label: string; value: CitiesWithCurrentLocation }[] = [
@@ -35,6 +35,10 @@ export default function WeatherInfo() {
 
   useEffect(() => {
     const getWeather = async () => {
+      if (!selectedLocation) {
+        return;
+      }
+
       const coords = resolveCityCords(selectedLocation);
 
       if (coords) {
