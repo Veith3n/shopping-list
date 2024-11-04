@@ -75,11 +75,13 @@ export default function WeatherInfo() {
       return <Text style={styles.errorText}>{weatherError}</Text>;
     }
 
+    if (selectedLocation === 'CURRENT_LOCATION' && geolocationError) {
+      return <Text style={styles.errorText}>{geolocationError}</Text>;
+    }
+
     if (weather) {
       return <WeatherInformation weather={weather} />;
     }
-
-    return <Text style={styles.errorText}>{geolocationError}</Text>;
   }
 
   return (
@@ -169,6 +171,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   errorText: {
+    paddingTop: 12,
     fontSize: 18,
     color: 'red',
     marginVertical: 5,
