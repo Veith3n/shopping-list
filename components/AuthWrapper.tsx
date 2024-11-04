@@ -1,6 +1,6 @@
 import { Redirect } from 'expo-router';
 import React from 'react';
-import { Button } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { useSession } from '@/app/ctx';
 import { Text } from '@/components/Themed';
@@ -26,9 +26,27 @@ const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
   return (
     <>
       {children}
-      <Button title={logoutTitle} onPress={signOut} color="red" />
+      <TouchableOpacity style={styles.button} onPress={signOut}>
+        <Text style={styles.buttonText}>{logoutTitle}</Text>
+      </TouchableOpacity>
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: 'red',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignItems: 'center',
+    margin: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
 
 export default AuthWrapper;
