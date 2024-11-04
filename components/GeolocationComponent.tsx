@@ -9,18 +9,26 @@ import { Text, View } from './Themed';
 const GeolocationComponent: React.FC = () => {
   const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocation();
 
+  const renderContent = () => {
+    if (!isGeolocationEnabled) {
+      return <GeolocationError message="Geolocation is not enabled" />;
+    }
+
+    if (!isGeolocationAvailable) {
+      return <GeolocationError message="Your device does not support Geolocation" />;
+    }
+
+    if (coords) {
+      return <GeolocationTable coords={coords} />;
+    }
+
+    return <GeolocationLoading />;
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Geolocation Info</Text>
-      {!isGeolocationAvailable ? (
-        <GeolocationError message="Your device does not support Geolocation" />
-      ) : !isGeolocationEnabled ? (
-        <GeolocationError message="Geolocation is not enabled" />
-      ) : coords ? (
-        <GeolocationTable coords={coords} />
-      ) : (
-        <GeolocationLoading />
-      )}
+      {renderContent()}
     </View>
   );
 };
