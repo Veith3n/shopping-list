@@ -23,3 +23,5 @@ This is a simple shopping list React Native app utilizing Expo in TypeScript.
 - Logging screen with email validation
 - Separate screens for adding products, viewing them, and details (modal after clicking on one)
 - Syncing data between screens
+- Tab with geolocation data and handle asking for geolocation permissions
+- Tab with weather view, for current location and predefined locations
