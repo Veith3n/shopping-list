@@ -15,7 +15,7 @@ type CitiesWithCurrentLocation = Cities | typeof CURRENT_LOCATION;
 export default function WeatherInfo() {
   const { coords: currentCoords, errorMsg: geolocationError } = useGeolocation();
 
-  const [selectedLocation, setSelectedLocation] = useState<CitiesWithCurrentLocation | undefined>(undefined);
+  const [selectedLocation, setSelectedLocation] = useState<CitiesWithCurrentLocation | null>(null);
   const [weather, setWeather] = useState<WeatherApiCurrentWeatherResponseWithWeatherInfo | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [weatherError, setWeatherError] = useState<string | null>(null);
@@ -63,6 +63,10 @@ export default function WeatherInfo() {
   }, [selectedLocation, currentCoords]);
 
   function renderContent() {
+    if (!selectedLocation) {
+      return <NoLocation />;
+    }
+
     if (loading) {
       return <ActivityIndicator size="large" color="#0000ff" />;
     }
@@ -86,18 +90,24 @@ export default function WeatherInfo() {
   );
 }
 
+const NoLocation = () => {
+  const color = useThemeColor('text');
+
+  return <Text style={[styles.noLocation, { color }]}>Please select a location to display info</Text>;
+};
+
 const CitySelectionPicker = ({
   locations,
   setSelectedLocation,
 }: {
   locations: { label: string; value: CitiesWithCurrentLocation }[];
-  setSelectedLocation: (value: CitiesWithCurrentLocation) => void;
+  setSelectedLocation: (value: CitiesWithCurrentLocation | null) => void;
 }) => {
   const color = useThemeColor('text');
 
   return (
     <RNPickerSelect
-      onValueChange={(value) => setSelectedLocation(value)}
+      onValueChange={(value) => (value === 'null' ? setSelectedLocation(null) : setSelectedLocation(value))}
       items={locations}
       style={{ inputAndroid: { ...pickerSelectStyles.inputAndroid, color }, inputIOS: { ...pickerSelectStyles.inputIOS, color } }}
       placeholder={{ label: 'Select a location', value: null }}
@@ -166,6 +176,11 @@ const styles = StyleSheet.create({
   iconContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginVertical: 5,
+  },
+  noLocation: {
+    paddingTop: 12,
+    fontSize: 18,
     marginVertical: 5,
   },
 });
