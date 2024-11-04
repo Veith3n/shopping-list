@@ -15,7 +15,7 @@ type CitiesWithCurrentLocation = Cities | typeof CURRENT_LOCATION;
 export default function WeatherInfo() {
   const { coords: currentCoords, errorMsg: geolocationError } = useGeolocation();
 
-  const [selectedLocation, setSelectedLocation] = useState<CitiesWithCurrentLocation | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<CitiesWithCurrentLocation | undefined>(undefined);
   const [weather, setWeather] = useState<WeatherApiCurrentWeatherResponseWithWeatherInfo | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [weatherError, setWeatherError] = useState<string | null>(null);
@@ -103,16 +103,16 @@ const CitySelectionPicker = ({
   setSelectedLocation,
 }: {
   locations: { label: string; value: CitiesWithCurrentLocation }[];
-  setSelectedLocation: (value: CitiesWithCurrentLocation | null) => void;
+  setSelectedLocation: (value: CitiesWithCurrentLocation | undefined) => void;
 }) => {
   const color = useThemeColor('text');
 
   return (
     <RNPickerSelect
-      onValueChange={(value) => (value === 'null' ? setSelectedLocation(null) : setSelectedLocation(value))}
+      onValueChange={(value) => (value === '' ? setSelectedLocation(undefined) : setSelectedLocation(value))}
       items={locations}
       style={{ inputAndroid: { ...pickerSelectStyles.inputAndroid, color }, inputIOS: { ...pickerSelectStyles.inputIOS, color } }}
-      placeholder={{ label: 'Select a location', value: null }}
+      placeholder={{ label: 'Select a location', value: '' }}
     />
   );
 };
